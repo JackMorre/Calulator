@@ -10,7 +10,6 @@ let opValue = "";
 const opArr = ["*", "-", "+", "/"];
 
 const updateTextValue = function (number) {
-  console.log(number);
   mainText.textContent = number;
 };
 
@@ -50,14 +49,14 @@ btns.forEach((btn) => {
   });
 });
 
-const cancelEverything = function (val) {
-  textValue = val;
+const cancelEverything = function () {
+  textValue = 0;
   firstValue = "";
   secondValue = "";
   opValue = "";
-  updateTextValue(textValue);
+  updateTextValue(0);
 };
-cancelAll.addEventListener("click", cancelEverything(0));
+cancelAll.addEventListener("click", cancelEverything);
 
 const hasDecimal = function (num) {
   const result = num - Math.floor(num) !== 0;
@@ -89,10 +88,18 @@ const roundedNum = function (num) {
   return Math.round((num + Number.EPSILON) * 10000) / 10000;
 };
 
-console.log(roundedNum(123.736823568));
-
 const getSum = function () {
-  firstValue = roundedNum(operate(firstValue, secondValue, opValue));
+  if (
+    (firstValue == 0 && opValue === "/") ||
+    (secondValue == 0 && opValue === "/")
+  ) {
+    cancelEverything();
+    firstValue = "eRRor";
+    console.log("howdy", firstValue);
+  } else {
+    firstValue = roundedNum(operate(firstValue, secondValue, opValue));
+  }
+
   updateTextValue(firstValue);
   secondValue = "";
 };
@@ -111,10 +118,6 @@ const operate = function (num1, num2, op) {
   console.log(num1, num2, op);
   const mainNum = Number(num1);
   const secNum = Number(num2);
-  if (mainNum == 0 || secNum == 0) {
-    cancelEverything("error");
-    return;
-  }
   switch (op) {
     case "/":
       return divide(mainNum, secNum);
